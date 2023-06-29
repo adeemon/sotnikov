@@ -1,0 +1,16 @@
+input {
+    height: 50px;
+    width: auto;
+    border: none;
+    -webkit-transition: 0.8s 0.1s ease;
+}
+
+.editable {
+    border: 2px solid black;
+    background-color: gray;
+    -webkit-transition: 0.8s 0.1s ease;
+}
+
+.hidden {
+    display: none;
+}

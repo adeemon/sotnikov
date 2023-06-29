@@ -6,24 +6,16 @@ import { fetchPhotos, selectPhotos } from './redux/slices/PhotosSlice';
 import { useSelector } from 'react-redux';
 import { Post } from './components/post/Post';
 import { fetchPosts, selectPosts } from './redux/slices/PostsSlice';
-
-const testPost =  {
-  "userId": 1,
-  "id": 1,
-  "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-  "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-}
+import { fetchUsers } from './redux/slices/UsersSlice';
 
 function App() {
-
-  const [photos, setAppPhotos] = useState();
   const dispatch = useDispatch();
   const postsSelector = useSelector(selectPosts);
 
   useEffect(()=>{
     dispatch(fetchPosts());
-    console.log(postsSelector);
-    console.log('Selector!')
+    dispatch(fetchUsers());
+    console.log('Fetched');
   },[]);
 
   const arrayToRender = postsSelector.map((element) => {

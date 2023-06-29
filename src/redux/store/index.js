@@ -3,10 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 
 import photosSliceReducer from "../slices/PhotosSlice";
 import postsSliceRecucer from '../slices/PostsSlice'
+import usersSliceReducer from '../slices/UsersSlice'
 const store = configureStore({
     reducer: {
         photos: photosSliceReducer,
-        posts: postsSliceRecucer
+        posts: postsSliceRecucer,
+        users: usersSliceReducer
     }
 })
 

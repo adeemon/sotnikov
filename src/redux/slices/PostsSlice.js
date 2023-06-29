@@ -19,6 +19,50 @@ export const fetchPosts = createAsyncThunk(
     }
 )
 
+export const deletePost = createAsyncThunk(
+    'posts/deletePost',
+    async function(id, { rejectWithValue, dispatch }) {
+        try {
+            const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (!response.ok) {
+                throw new Error('Server Error!');
+            }
+
+            dispatch(removePost({ id }));
+
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
+
+export const updatePost = createAsyncThunk(
+    'posts/updatePost',
+    async function({ title, body, userId, id }, { rejectWithValue, dispatch }) {
+        try {
+            const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    title: title,
+                    body: body
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Server Error!');
+            }
+
+            dispatch(patchPost({ userId, id, title, body }));
+
+        } catch (error) {
+            return rejectWithValue(error.message);
+        }
+    }
+)
+
 const setError = (state, action) => {
     state.status = 'rejected';
     state.error = action.payload;
@@ -35,6 +79,20 @@ export const postsSlice = createSlice({
 
         fillPosts: (state, action) => {
             state = action.payload;
+        },
+
+        removePost: (state, action) => {
+            state.posts = state.posts.filter((post) => post.id !== action.payload.id)
+        },
+        patchPost: (state, action) => {
+            state.posts = state.posts.map((post) => {
+                if (post.id === action.payload.id) {
+                    console.log(`Пост с id = ${action.payload.id} апдейтнут`);
+                    console.log(action.payload);
+                    return action.payload;
+                }
+                return post;
+            })
         }
     },
     extraReducers: {
@@ -52,5 +110,7 @@ export const postsSlice = createSlice({
 export const selectPosts = (state) => {
     return state.posts.posts;
 }
+
+const { fillPosts, removePost, patchPost } = postsSlice.actions;
 
 export default postsSlice.reducer
