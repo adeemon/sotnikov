@@ -11,7 +11,7 @@ import { selectUserByID, selectUsers } from '../../redux/slices/UsersSlice';
 import './styles.css'
 
 import { useForm } from "react-hook-form"
-import { updatePost } from '../../redux/slices/PostsSlice';
+import { deletePost, updatePost } from '../../redux/slices/PostsSlice';
 
 export function Post({userId, id, title, body}) {
 
@@ -38,7 +38,6 @@ export function Post({userId, id, title, body}) {
   }
 
   const onEdit = (data) => {
-    //reset();
     setEditMode(!editMode);
   }
 
@@ -47,7 +46,7 @@ export function Post({userId, id, title, body}) {
   }
 
   const onDelete = () => {
-    console.log('delete!')
+    dispatch(deletePost(id));
   }
 
   const onSubmit = (data) => {
@@ -59,9 +58,23 @@ export function Post({userId, id, title, body}) {
   return (
     <div className='container'>
       <form onSubmit={handleSubmit(onSubmit)} onAbort={()=>console.log('aborted') } >
-      <input className={`username + ${editMode ? ' editable' : ''}`} {...register('userName')} defaultValue={userName} readOnly={!editMode} />
-      <input className={`title + ${editMode ? ' editable' : ''}`} {...register('title')} defaultValue={title} readOnly={!editMode} />
-      <input className={`body + ${editMode ? ' editable' : ''}`} {...register('body')} defaultValue={body} readOnly={!editMode} />
+        <div className="info">
+          <input 
+            tabindex={editMode ? 0 : -1} 
+            className={`username + ${editMode ? ' editable' : ''}`} {...register('userName')} 
+            defaultValue={userName} 
+            readOnly={!editMode} />
+          <input
+            tabindex={editMode ? 0 : -1}
+            className={`title + ${editMode ? ' editable' : ''}`} {...register('title')} 
+            defaultValue={title} 
+            readOnly={!editMode} />
+          <input
+            tabindex={editMode ? 0 : -1}
+            className={`body + ${editMode ? ' editable' : ''}`} {...register('body')} 
+            defaultValue={body} 
+            readOnly={!editMode} />
+        </div>
       <input className={`${!editMode ? 'hidden' : ''}`}
         type="submit"
         value="Send"
