@@ -45,7 +45,11 @@ export const usersSlice = createSlice({
 })
 
 export const selectUsers = (state) => {
-    return state.users.users;
+    return state.users.status === 'loaded' ? state.users.users : null;
+}
+
+export const selectIsUsersLoaded = (state) => {
+    return state.users.status === 'loaded';
 }
 
 export default usersSlice.reducer

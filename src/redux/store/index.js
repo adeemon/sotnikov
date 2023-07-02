@@ -5,12 +5,14 @@ import photosSliceReducer from "../slices/PhotosSlice";
 import postsSliceRecucer from '../slices/PostsSlice'
 import usersSliceReducer from '../slices/UsersSlice'
 import commentsSliceReducer from '../slices/CommentsSlice'
+import favouritesSliceReducer from '../slices/FavouritesSlice'
 const store = configureStore({
     reducer: {
         photos: photosSliceReducer,
         posts: postsSliceRecucer,
         users: usersSliceReducer,
-        comments: commentsSliceReducer
+        comments: commentsSliceReducer,
+        favourites: favouritesSliceReducer
     }
 })
 

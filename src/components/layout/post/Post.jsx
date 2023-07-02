@@ -1,40 +1,31 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import CommentIcon from '@mui/icons-material/Comment';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
-import FavoriteIcon from '@mui/icons-material/Favorite';
 import IconButton from '@mui/material/IconButton';
-import { selectUserByID, selectUsers } from '../../redux/slices/UsersSlice';
+import { selectUsers } from '../../../redux/slices/UsersSlice';
 import './styles.css'
 
 import { useForm } from "react-hook-form"
-import { deletePost, updatePost } from '../../redux/slices/PostsSlice';
+import { deletePost, updatePost } from '../../../redux/slices/PostsSlice';
+import { Comments } from '../comments/Comments';
+import { addFavourite, removeFavourite, selectFavourites, selectIsFavourite, selectIsFavouriteById } from '../../../redux/slices/FavouritesSlice';
+import { FavouriteIcon } from '../../ui-kit/FavouriteIcon';
 
 export function Post({userId, id, title, body}) {
 
-  const { register, handleSubmit, reset } = useForm();
+  const { register, handleSubmit } = useForm();
   let [editMode, setEditMode] = useState(false);
-  let [userName, setUserName] = useState();
+  let [commentsOpened, setCommentsOpened] = useState(false);
+  
   const dispatch = useDispatch();
-  const userNameSelector = useSelector(selectUsers).filter((user) => user?.id === userId);
-
-  useEffect(()=>{
-    console.log('Пост перерисован');
-    console.log('Пропсы = ',{userId, id, title, body});
-    if (userNameSelector.length > 0){
-      try {
-        setUserName(userNameSelector[0].name)
-      } catch (error){
-        console.log(error);
-      }
-    }
-  },[userNameSelector])
+  const userNameSelector = useSelector(selectUsers).filter((user) => user.id === userId)[0].name;
+  const isFavourite = useSelector(selectIsFavourite(id));
 
   const onComments = () => {
-    console.log('comments!')
+    setCommentsOpened(!commentsOpened);
   }
 
   const onEdit = (data) => {
@@ -42,7 +33,13 @@ export function Post({userId, id, title, body}) {
   }
 
   const onFavourite = () => {
-    console.log('favourite!')
+    if (isFavourite) {
+      console.log('delete');
+      dispatch(removeFavourite({id}));
+    } else {
+      console.log('add');
+      dispatch(addFavourite({id}));
+    }
   }
 
   const onDelete = () => {
@@ -50,27 +47,26 @@ export function Post({userId, id, title, body}) {
   }
 
   const onSubmit = (data) => {
-    console.log(data);
     dispatch(updatePost({userId, id, ...data}))
     setEditMode(false);
   }
 
   return (
     <div className='container'>
-      <form onSubmit={handleSubmit(onSubmit)} onAbort={()=>console.log('aborted') } >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="info">
           <input 
-            tabindex={editMode ? 0 : -1} 
-            className={`username + ${editMode ? ' editable' : ''}`} {...register('userName')} 
-            defaultValue={userName} 
-            readOnly={!editMode} />
+          tabIndex={editMode ? 0 : -1} 
+          className={`username + ${editMode ? ' editable' : ''}`} {...register('userName')} 
+          defaultValue={userNameSelector} 
+          readOnly={!editMode} />
           <input
-            tabindex={editMode ? 0 : -1}
+            tabIndex={editMode ? 0 : -1}
             className={`title + ${editMode ? ' editable' : ''}`} {...register('title')} 
             defaultValue={title} 
             readOnly={!editMode} />
           <input
-            tabindex={editMode ? 0 : -1}
+            tabIndex={editMode ? 0 : -1}
             className={`body + ${editMode ? ' editable' : ''}`} {...register('body')} 
             defaultValue={body} 
             readOnly={!editMode} />
@@ -91,11 +87,14 @@ export function Post({userId, id, title, body}) {
         <EditIcon />
     </IconButton>
     <IconButton aria-label="delete" onClick={onFavourite}>
-        <FavoriteIcon />
+      <FavouriteIcon isFavourite={isFavourite} />
     </IconButton>
     <IconButton aria-label="delete" onClick={onDelete}>
         <DeleteIcon />
     </IconButton>
+    {commentsOpened
+    ? <Comments postId={id}/>
+    : null}
     </div>
   );
 }

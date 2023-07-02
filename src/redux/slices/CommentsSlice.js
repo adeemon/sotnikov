@@ -38,7 +38,7 @@ export const commentsSlice = createSlice({
         },
         [fetchComments.fulfilled]: (state, action) => {
             state.status = 'loaded';
-            state.photos = action.payload;
+            state.comments = action.payload;
         },
         [fetchComments.rejected]: setError
     }
@@ -52,8 +52,8 @@ export const selectCommentsByUserID = (state, userId) => {
     return state.comments.comments.filter((comment) => comment.userId === userId)
 }
 
-export const selectStatus = (state) => {
-    return state.comments.status;
+export const selectIsLoaded = (state) => {
+    return state.comments.status === 'loaded'
 }
 
 export default commentsSlice.reducer
