@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, current } from "@reduxjs/toolkit";
 
 export const fetchUsers = createAsyncThunk(
     'users/fetchUsers',
@@ -31,7 +31,18 @@ export const usersSlice = createSlice({
         status: null,
         error: null
     },
-    reducers: {},
+    reducers: {
+        updateUser: (state, action) => {
+            state.users = state.users.map((user) => {
+                if (user.id === action.payload.id) {
+                    let newUser = user;
+                    newUser.name = action.payload.name;
+                    return newUser;
+                }
+                return user;
+            })
+        }
+    },
     extraReducers: {
         [fetchUsers.pending]: (state) => {
             state.status = 'loading';
@@ -55,5 +66,7 @@ export const selectUserById = id => state => {
 export const selectIsUsersLoaded = (state) => {
     return state.users.status === 'loaded';
 }
+
+export const { updateUser } = usersSlice.actions;
 
 export default usersSlice.reducer

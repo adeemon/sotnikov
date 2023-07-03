@@ -87,8 +87,6 @@ export const postsSlice = createSlice({
         patchPost: (state, action) => {
             state.posts = state.posts.map((post) => {
                 if (post.id === action.payload.id) {
-                    console.log(`Пост с id = ${action.payload.id} апдейтнут`);
-                    console.log(action.payload);
                     return action.payload;
                 }
                 return post;

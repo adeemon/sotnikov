@@ -24,35 +24,24 @@ export function PostView ({onSubmit, editMode, isCommentsOpened, isFavourite,
     }
 
     return (
-      <div className={styles.container}> 
-        <form onSubmit={handleSubmit(onFormSubmit)}>
-          <div>{userName}</div>
-          <div className={ styles.info }>
-            <input
-              tabIndex={editMode ? 0 : -1} 
-              className={classNames(styles.title, editMode ? styles.editable : null)} {...register('name')} 
-              defaultValue={userName} 
-              readOnly={!editMode} />
-            <input
-              tabIndex={editMode ? 0 : -1}
-              className={classNames(styles.email, editMode ? styles.editable : null)} {...register('title')} 
-              defaultValue={title} 
-              readOnly={!editMode} />
-            <input
-              tabIndex={editMode ? 0 : -1}
-              className={classNames(styles.body, editMode ? styles.editable : null)} {...register('body')} 
-              defaultValue={body} 
-              readOnly={!editMode} />
-          </div>
-        <input className={!editMode ? styles.hidden : null}
-          type="submit"
-          value="Send"
-        />
-        <input className={!editMode ? styles.hidden : null}
-          type="reset"
-          value="Reset"
-        />
-      </form>
+      <div className={styles.container}>
+        { !editMode 
+          ? <div>
+              <div>{title}</div>
+              <div>{userName}</div>
+              <div>{body}</div>
+            </div>
+          : <form onSubmit={handleSubmit(onFormSubmit)}>
+              <div>{userName}</div>
+              <div className={ styles.info }>
+                <input {...register('name')} defaultValue={userName} />
+                <input {...register('title')} defaultValue={title} />
+                <input {...register('body')} defaultValue={body} />
+              </div>
+              <input type="submit" value="Send" />
+              <input type="reset"value="Reset" />
+            </form>
+      }
       <CommentsButton onClick={onComments} isActive={isCommentsOpened}/>
       <EditButton onClick={onEdit} />
       <FavouriteButton isFavourite={isFavourite} onClick={onFavourite} />
