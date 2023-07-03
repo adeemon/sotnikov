@@ -48,6 +48,10 @@ export const selectUsers = (state) => {
     return state.users.status === 'loaded' ? state.users.users : null;
 }
 
+export const selectUserById = id => state => {
+    return state.users.users.filter((user) => user.id === id)[0].name;
+}
+
 export const selectIsUsersLoaded = (state) => {
     return state.users.status === 'loaded';
 }

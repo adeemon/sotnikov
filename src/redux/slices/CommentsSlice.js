@@ -48,8 +48,8 @@ export const selectComments = (state) => {
     return state.comments.comments;
 }
 
-export const selectCommentsByUserID = (state, userId) => {
-    return state.comments.comments.filter((comment) => comment.userId === userId)
+export const selectCommentsByPostId = id => state => {
+    return state.comments.comments.filter((comment) => comment.id === id);
 }
 
 export const selectIsLoaded = (state) => {

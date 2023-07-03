@@ -1,31 +1,32 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import CommentIcon from '@mui/icons-material/Comment';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import IconButton from '@mui/material/IconButton';
-import { selectUsers } from '../../../redux/slices/UsersSlice';
-import './styles.css'
+
+import { selectUserById, selectUsers } from '../../../redux/slices/UsersSlice';
+import styles from './styles.module.scss'
+import classNames from 'classnames';
 
 import { useForm } from "react-hook-form"
 import { deletePost, updatePost } from '../../../redux/slices/PostsSlice';
 import { Comments } from '../comments/Comments';
-import { addFavourite, removeFavourite, selectFavourites, selectIsFavourite, selectIsFavouriteById } from '../../../redux/slices/FavouritesSlice';
-import { FavouriteIcon } from '../../ui-kit/FavouriteIcon';
+import { addFavourite, removeFavourite, selectIsFavourite } from '../../../redux/slices/FavouritesSlice';
+import { FavouriteButton } from '../../ui-kit/buttons/FavouriteButton';
+import { CommentsButton } from '../../ui-kit/buttons/CommentsButton';
+import { DeleteButton } from '../../ui-kit/buttons/DeleteButton';
+import { EditButton } from '../../ui-kit/buttons/EditButton';
 
 export function Post({userId, id, title, body}) {
 
   const { register, handleSubmit } = useForm();
   let [editMode, setEditMode] = useState(false);
-  let [commentsOpened, setCommentsOpened] = useState(false);
+  let [isCommentsOpened, setIsCommentsOpened] = useState(false);
   
   const dispatch = useDispatch();
-  const userNameSelector = useSelector(selectUsers).filter((user) => user.id === userId)[0].name;
+  const userNameSelector = useSelector(selectUserById(userId));
   const isFavourite = useSelector(selectIsFavourite(id));
 
   const onComments = () => {
-    setCommentsOpened(!commentsOpened);
+    setIsCommentsOpened(!isCommentsOpened);
   }
 
   const onEdit = (data) => {
@@ -52,47 +53,39 @@ export function Post({userId, id, title, body}) {
   }
 
   return (
-    <div className='container'>
+    <div className={styles.container}> 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="info">
+        <div className={ styles.info }>
           <input 
           tabIndex={editMode ? 0 : -1} 
-          className={`username + ${editMode ? ' editable' : ''}`} {...register('userName')} 
+          className={classNames(styles.title, editMode ? styles.editable : null)} {...register('userName')} 
           defaultValue={userNameSelector} 
           readOnly={!editMode} />
           <input
             tabIndex={editMode ? 0 : -1}
-            className={`title + ${editMode ? ' editable' : ''}`} {...register('title')} 
+            className={classNames(styles.email, editMode ? styles.editable : null)} {...register('title')} 
             defaultValue={title} 
             readOnly={!editMode} />
           <input
             tabIndex={editMode ? 0 : -1}
-            className={`body + ${editMode ? ' editable' : ''}`} {...register('body')} 
+            className={classNames(styles.body, editMode ? styles.editable : null)} {...register('body')} 
             defaultValue={body} 
             readOnly={!editMode} />
         </div>
-      <input className={`${!editMode ? 'hidden' : ''}`}
+      <input className={!editMode ? styles.hidden : null}
         type="submit"
         value="Send"
       />
-      <input className={`${!editMode ? 'hidden' : ''}`}
+      <input className={!editMode ? styles.hidden : null}
         type="reset"
         value="Reset"
       />
     </form>
-    <IconButton aria-label="delete" onClick={onComments}>
-        <CommentIcon />
-    </IconButton>
-    <IconButton aria-label="delete" onClick={onEdit}>
-        <EditIcon />
-    </IconButton>
-    <IconButton aria-label="delete" onClick={onFavourite}>
-      <FavouriteIcon isFavourite={isFavourite} />
-    </IconButton>
-    <IconButton aria-label="delete" onClick={onDelete}>
-        <DeleteIcon />
-    </IconButton>
-    {commentsOpened
+    <CommentsButton onClick={onComments} isActive={isCommentsOpened}/>
+    <EditButton onClick={onEdit} />
+    <FavouriteButton isFavourite={isFavourite} onClick={onFavourite} />
+    <DeleteButton onClick={onDelete} />
+    {isCommentsOpened
     ? <Comments postId={id}/>
     : null}
     </div>
