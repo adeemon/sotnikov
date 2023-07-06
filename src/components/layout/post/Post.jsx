@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
@@ -20,13 +21,7 @@ export function Post({userId, id, title, body}) {
   const userNameSelector = useSelector(selectUserById(userId));
   const isFavourite = useSelector(selectIsFavourite(id));
 
-  const { ref, inView, entry } = useInView({
-    /* Optional options */
-    threshold: 0.1,
-    rootMargin: '20px 0px',
-  });
-
-  useEffect(()=>{
+  useEffect(() => {
     console.log(`${id} перерисован`)
   })
 
@@ -58,6 +53,7 @@ export function Post({userId, id, title, body}) {
 
   return (
     <div ref={ref}>
+      {id}
       {inView
       ? <PostView 
       editMode = {editMode}
