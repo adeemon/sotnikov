@@ -11,7 +11,6 @@ export const fetchUsers = createAsyncThunk(
             }
 
             const result = await response.json();
-            console.log('Загрузили юзеров');
             return result;
         } catch (error) {
             return rejectWithValue(error.message);

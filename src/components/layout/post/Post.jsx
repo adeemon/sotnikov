@@ -1,18 +1,19 @@
-import { useEffect, useState } from 'react';
-import { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
-import { useInView } from 'react-intersection-observer';
+
 
 import { selectUserById } from '../../../redux/slices/UsersSlice';
 
 
-import { deletePost, updatePost } from '../../../redux/slices/PostsSlice';
+import { deletePost } from '../../../redux/slices/PostsSlice';
 
 import { addFavourite, removeFavourite, selectIsFavourite } from '../../../redux/slices/FavouritesSlice';
 import { PostView } from './PostView';
 
-export function Post({userId, id, title, body}) {
+export const Post = React.memo(PostY);
+
+export function PostY({userId, id, title, body}) {
 
   let [editMode, setEditMode] = useState(false);
   let [isCommentsOpened, setIsCommentsOpened] = useState(false);
@@ -25,15 +26,15 @@ export function Post({userId, id, title, body}) {
     console.log(`${id} перерисован`)
   })
 
-  const onComments = () => {
+  const onComments = useCallback(() => {
     setIsCommentsOpened(!isCommentsOpened);
-  }
+  },[isCommentsOpened]);
 
-  const onEdit = (data) => {
+  const onEdit = useCallback(() => {
     setEditMode(!editMode);
-  }
+  },[editMode]);
 
-  const onFavourite = () => {
+  const onFavourite = useCallback(() => {
     if (isFavourite) {
       console.log('delete');
       dispatch(removeFavourite({id}));
@@ -41,21 +42,18 @@ export function Post({userId, id, title, body}) {
       console.log('add');
       dispatch(addFavourite({id}));
     }
-  }
+  },[isFavourite]);
 
-  const onDelete = () => {
+  const onDelete = useCallback(() => {
     dispatch(deletePost(id));
-  }
+  },[]);
 
-  const onSubmit = () => {
+  const onSubmit = useCallback(() => {
     setEditMode(false);
-  }
+  },[]);
 
   return (
-    <div ref={ref}>
-      {id}
-      {inView
-      ? <PostView 
+    <PostView 
       editMode = {editMode}
       isCommentsOpened = {isCommentsOpened}
       isFavourite = {isFavourite}
@@ -70,8 +68,6 @@ export function Post({userId, id, title, body}) {
       id = {id}
       key = {id}
       userId = {userId}
-      />
-      : <div></div>}
-    </div>
-  );
+    />
+  )
 }
