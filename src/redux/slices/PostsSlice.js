@@ -109,6 +109,10 @@ export const selectPosts = (state) => {
     return state.posts.posts;
 }
 
+export const selectIsPostsLoaded = (state) => {
+    return state.posts.status === 'loaded';
+}
+
 const { fillPosts, removePost, patchPost } = postsSlice.actions;
 
 export default postsSlice.reducer

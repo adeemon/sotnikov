@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useSelector } from 'react-redux';
 import { useInView } from 'react-intersection-observer';
@@ -22,8 +22,13 @@ export function Post({userId, id, title, body}) {
 
   const { ref, inView, entry } = useInView({
     /* Optional options */
-    threshold: 0,
+    threshold: 0.1,
+    rootMargin: '20px 0px',
   });
+
+  useEffect(()=>{
+    console.log(`${id} перерисован`)
+  })
 
   const onComments = () => {
     setIsCommentsOpened(!isCommentsOpened);
@@ -70,7 +75,7 @@ export function Post({userId, id, title, body}) {
       key = {id}
       userId = {userId}
       />
-      : null}
+      : <div></div>}
     </div>
   );
 }

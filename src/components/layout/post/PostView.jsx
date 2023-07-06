@@ -10,6 +10,7 @@ import { useDispatch } from 'react-redux';
 import { updatePost } from '../../../redux/slices/PostsSlice';
 import { updateUser } from '../../../redux/slices/UsersSlice';
 import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 
 export function PostView ({onSubmit, editMode, isCommentsOpened, isFavourite,
     userName, title, body, onComments, onEdit, onFavourite, onDelete, id, userId}) {
@@ -23,8 +24,13 @@ export function PostView ({onSubmit, editMode, isCommentsOpened, isFavourite,
       dispatch(updateUser({id, ...data}))
     }
 
+    const { ref, inView, entry } = useInView({
+      /* Optional options */
+      threshold: 0.2,
+    });
+
     return (
-      <div className={styles.container}>
+      <div className={styles.container} ref={ref}>
         { !editMode 
           ? <div>
               <div>{title}</div>
